@@ -1,0 +1,47 @@
+AWS Elastic Container Service :
+1 )docker container doesnt have the capability of auto healing and scaling
+
+2)in a 2gb ec2 we can only use 3 500mb container if load increases container downtime will incraese because of no auto scaling
+
+3)container ip changes every time it restarts because of these drawback container orchestraion environment were came to market like k8s
+
+4)we have controller in k8s to do auto healing and auto scaling and exteral custom resources to solve the problems with this we can take the containers to the deployment stage
+
+5)aws has it own k8s distributions services as eks and opensources as aks , openshit .
+
+6) aws came up with concept of coe -> ECS (container orchestration environment)its not an open sources its with in aws customers service only.
+
+7) In ecs we have fargate we dont have to manage anything with the environment with serverless and easy to use but Ek8s is complicated and heavy architecture
+
+8)but its not as successful as EKS 
+
+9) pods is a descpripition of the req for the container in ecs its knon as task definition herer task run the container 
+
+10)we can check the github aws 0 to hero day 21 for all notes and q&a
+
+11)search for ecs in aws -> create cluster -> give a name -> infrasturcture[farget is serverless ] ec2 is server we have to configure manually for scaling and everyrthing
+
+12)we go with farget  -> create cluster ->it will take a minute -> ecs is cost effective compare to eks
+
+13)cloudwatch is enabled by default in ecs
+
+14)create a terminal ubuntu go to cli dashbord copy the docker file from day 21 its a python app. build this docker image and push it to ecr 
+
+15)go to ecr and create a repo so that we can push the image here to save it on ecr we can do it with the commands its in github day 21
+docker build -t reg/repo :tag WITH THIS WHEN WE PUSH THE IMAGE IT WILL DROP IN ECR repo
+
+16)now the py got build docker push command - we got in ecr we finished the first step
+
+17)now we need a task definition to create a pod ->create task ->task role [conttainer need acces to s3, cloud watch]we can use this to do api calls and req 
+
+18)task execution role use to talk to other external aws services and to integrate it with cloudwatch to check logs and errors.
+
+19)essentials column
+name imageurl 
+container port 3000 we can add additional port 80 443 as per our req  .
+
+20)there are other options we can add if need ->CREATE
+
+21)now we just create only the task definition is active .we just create a cluster not running anything in that -> goto task definition ->run task ->give the name ->create
+
+22)now the task is launch {task is the one that will run the container in the cluster its has the logs data}

@@ -1,0 +1,117 @@
+Things need to create eks cluster
+*aws cli (to create anything in aws)
+*kubectl (to perform task in kubernetes)
+*eks ctl (to create cluster in aws)
+*helm chart
+step 1 :
+-cmd (to create an eks cluster) - eksctl create cluster --name demo-cluster --region us-east-1 --fargate
+
+
+step 2:
+once the cluster is running go inside and tap resources
+we can check the resources available in cluster dashbord instead of using cmd pod,cluster,replicaset 
+
+step 3:
+Once kubectl is installed, you need to configure it to work with your EKS cluster.
+aws eks update-kubeconfig --name demo-cluster --region us-east-1
+
+step 4:
+we are creating a fargate profile its like ec2 compute
+eksctl create fargateprofile \
+    --cluster demo-cluster \
+    --region ap-south-1 \
+    --name alb-sample-app \
+    --namespace game-2048
+this is unique to fargate
+important hints:
+Fargate -> serverless compute like ec2
+
+Openid connector provider -> we can integrate any identity provider (eladp,apthar,keyclock) its like we using fb acct to login to 
+other apps like insta ,twitter with ith identity of fb.we can attach our identity provider to identity broker to use it in various apps.
+we can use IAm user or anyother providers.
+
+Farget profile -> u can only deploy pods on your default avilable namespaces if we want a new namespace we should create a new one
+ 
+step 5
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/examples/2048/2048_full.yaml
+Deploy the deployment, service and Ingress
+IMPORTANT :[ Use the project namespace ]here its game-2048
+
+kubectl get pods -n game-2048 
+5 replicas should be running perfectly
+
+kubectl get svc -n game-2048
+our nodepoert and tcp will be there 
+those who are all in the private vpc now can asscess this cluster through nodeport.
+
+kubectl get ingress -n game-2048
+we need to create a ingress controller to acces the public
+
+-step-6
+we use app load balancer here alb
+-configure IAM OIDC provider [for kube to talk to aws]its mandatory
+eksctl utils associate-iam-oidc-provider --cluster demo-cluster-1 --approve 
+ERROR FACED : cluster region and the region we configured at start in aws should be the same or else we wont get api provider apporvel
+
+once we create the ig controller ->it uses the ingress resource and -> it  will create the not only the create load balancer it will also configure the entire loadbalancer
+target group ,port
+
+step-7
+now we got alb pod access for aws -now we need to create an iam policy and iam role -here we have a json file in github alreay config copy paste it
+curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
+
+paste it in google to check the permission in this file
+its provided by alb document it constant permission policy no need to edit anything
+
+step-8
+now we are creating an iam policy for alb controller creation
+aws iam create-policy \
+    --policy-name AWSLoadBalancerControllerIAMPolicy \
+    --policy-document file://iam_policy.json
+
+step-9
+now we are creating a ROle
+eksctl create iamserviceaccount \
+  --cluster=<your-cluster-name> \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn=arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve
+
+step-10
+now we can create a alb controller using helm chart
+we need to install helm using chacolate
+choco install kubernetes-helm
+now we adding helm to eks
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update eks
+
+make sure we check this following things
+we need to give our vpc id
+
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system \
+  --set clusterName=demo-cluster-1 \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller \
+  --set region=ap-south-1 \
+  --set vpcId=vpc-0fe130bc682ad41b3
+
+now we have created a alb loadbalancer success 
+-kubectl get deploy -n kube-system
+-helm delete aws-load-balancer-controller -n kube-system [to delete a load balancer]
+-kubectl get deployment -n kube-system aws-load-balancer-controller
+we will have it in two availability zone
+
+ERROR FACED-had some mistakes with running vpc id had to correct the id name to solve the issue.
+
+kubectl get ingress -n game-2048
+copy adderss and paste in web 
+we will get the application site
+SUCCESS
+
+errors
+ERROR FACED : cluster region and the region we configured at start in aws should be the same or else we wont get api provider apporvel
+ERROR FACED-had some mistakes with running vpc id had to correct the id name to solve the issue.
+
+

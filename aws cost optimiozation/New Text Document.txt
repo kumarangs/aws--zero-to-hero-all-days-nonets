@@ -1,0 +1,29 @@
+cost optimization setup guide this includes volume ,lamda
+
+1)create an ec2 instance as usual with volume
+
+2)go to volume setings in aws dashbord there we can see the volume code or we can find the volume id in our in our ec2
+
+3)copy the volume id and use in to create a snapshot(full vol copy) we can find snapshot opp in the same dsash board
+
+4)after check that vol snapshot has been done we will have a copy in the snapshot 
+
+5)create new lamda function called cost-optmization-ebs-snapshot choose runtime - python and hit create
+
+6)once the function over page open - go to git and copy the python code we have and paste it under the code source -save(ctrl+s)and hit deploy and test
+it will fail because the invocation time is more then 10sec we didnt give permissions yet 
+
+7)go to configration and increase the time and save it we need to keep the time less as possible
+
+8)go to the code coloum permission are given based on roles so we have to give specific roles then only it will run so go to config again and -permission-iam user id -click on attach policy
+-create a new policy [- describe instance ] [-give action (snapshot)-delete-list-giving permission] and save it -next-give name(cost-opt-ebs)-create policy
+
+9)we have created a ppolicy-go to roles-select the role name-(search the name) now attach it to the permission add permission 
+
+10)now lets see it shold not delete anything cause now snapshot is belogs to a volume which is attach to a ec2 -HIT Test
+
+11)we can see once we delete the ec2 and volume our snapshotremains -success
+
+12)we can edit code as delete the snapshot if its 30days old delete it
+
+13) we can edit with if statements in multiple way using python code 

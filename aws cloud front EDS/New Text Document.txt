@@ -1,0 +1,32 @@
+EDN concept
+1)s3 is used to store binary large objest files like audio video and directly host it from s3
+
+2)users can directly get access to s3 but thats not the best practice due to security ,latency ,cost.
+
+3)so overcome all this we use a concept called CDN (cloud front in AWS)
+
+4)we can take insta for example multiple users access from worldwide .if indian user update a pic from here an us user need not to go to 
+s3 to get the file .CDN took a EDGE copy of the file and host it on worldwide nearest regions for that user .this the advantage in using EDN
+
+5)ts provides lowest latency no data transfer cost and high security
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+sign in to ur AWS console
+cft templates delete panniten athu venumanu therla
+
+1)go to S3 bucket and  create a bucket the bucket name can be the domain name www.muthu.com ,aws region we should block all public acces and enable versioning
+
+2)choose the bucket go to properties column and at the bottom click edit static website hosting make sure its enable 
+down below in index doc put  index.html and error .html nxt - save changes (we have created the bucket and enabled static hosting)
+
+3)go to objects coloumn and choose the html files to upload and hit it
+
+4)go to properties and hit the url at the bottom of the page make sure it blocked
+
+5)go to cloud front - create distribution -choose our S3 bucket -origin acces (put in legacy access)-create neew origin id - yes update bucket policy  
+
+6)as for loctions we can use all edge location as per the customer req - we can add alternate domain if needed (all need pricing here)
+
+7)go down and create distribution and turn off fire wall - it will take 5min to create -copy distribution domain url nad paaaste in server we can access the html page
+
+ 
