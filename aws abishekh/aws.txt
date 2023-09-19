@@ -1,0 +1,72 @@
+Iam - user, group, roles
+
+VPC - user internet - internet gateway- elb - route table router - security groups - target EC2
+
+NACL - create auto security groups if we use same to multiple EC2
+
+NAT[routable pub ip] and SNAT [load bala pub ip]
+
+NAT gateway to mask the IP address 
+for eg - Target ec2 to download anything from google it helps to mask the IPadress and replace it with public ip of loadbalancer 
+on internet portals to download anything .to avoid security breaks on target machines in vpc 
+
+SG - is used on instance lvl security where we can control our inbound and outbond traffics
+
+inbound -we can restrict any req from user and port through inbond rules like closing port 8080 from accessing for jenkins
+outbound - is nothing but where the app [ex amazon can access amazon pay by itseif] . by default port 25 will be locked to restrict emails and spams
+
+NACL-Network Access Control List
+its applied at the subnet lvl with nacl we can play at critical lvl
+Secrity group were applied in aws to provied specific access not all traffic but some user allows all traffic to their ec2
+But NACL can restrict access of the whole subnet .Due to this even when ec2 allows all trafiic .we can cover all ec2 through subnet security wraper
+
+how to edit vpc
+create a vpc - go to vpc -security - Network ACLs - inbound rules - rules should be start from small number to large number - priorty should be small number - allow or deney port here
+create ec2 - choose custom vpc we created -use default secrity -now we can play with both nacl and sg settings - save
+python3 -m http.server 8000 [ex http server to practic
+		
+nacl -its the 1st gateway layer of vpc
+sg -last point of vpc and opening of ec2 app
+
+VPC OVERVIEW
+->The vpc has pubic and private subnets in two availability zones
+->each public subnets contains a loadbalancer and nat gateway
+->The servers running in the private subnets ,are launched and terminated through auto scaling group , and receive traffic from the load balancer
+->The servers can connect to the internet by using the NAT gateway
+
+vpc,auto scaling ,loadbalancer, target 
+
+cretae a host ec2 machine in that 
+
+ls | grep mykeypair[open git in the keypair dierctory]
+
+pwd-copy the path-scp -i....bastion mache ubuntu@pub ip:/home/ubuntu
+scp -i /c/Users/91902/Desktop/aws/mykeypair.pem /c/Users/91902/Desktop/aws/mykeypair.pem ubuntu@65.0.124.44:/home/ubuntu
+
+after that connect to target machine private ip through bastion host
+ssh -i "mykeypair.pem" ubuntu@ec2-65-0-124-44.ap-south-1.compute.amazonaws.com
+
+we are gonna deploy a html file in target machine
+vim index.html
+copy the html file from w3school.com
+save and quit
+python3 -m http.server 8000
+
+go to vpc portal create vpc 
+
+
+
+create VPC - autoscalling - template - dont touch subnet in template - vpc - join tem to autoscalling - vpc - subprivate - bastion or jumpmer - add in same vpc bastion
+
+login to bastion/jumper ec2 using 
+scp -i /c/Users/91902/Desktop/aws/mykeypair.pem /c/Users/91902/Desktop/aws/mykeypair.pem ubuntu@65.0.124.44:/home/ubuntu
+after that connect to target machine private ip through bastion host
+ssh -i "mykeypair.pem" ubuntu@ec2-65-0-124-44.ap-south-1.compute.amazonaws.com
+we are gonna deploy a html file in target machine
+vim index.html
+copy the html file from w3school.com
+save and quit
+python3 -m http.server 8000
+
+loadblancer - create application lb - internet facing - vpc - public subnet - sg group - create target group - select the instances 
+merge to lb - lb created - check with dns in the internet

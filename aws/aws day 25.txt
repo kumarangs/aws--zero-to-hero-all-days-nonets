@@ -1,0 +1,28 @@
+AWS CONFIG in detail
+
+-when ever we creating an instance set monitoring enable
+
+-in our ec2 we have a specification for monitoring in detail and enable it to track and monitoring the ec2 and to integrate it with any othert monitoring tool
+
+-this kind of monitoring set is available in all aws services like s3 buckets we call it life cycle management we should enable it to track it
+
+-an organisation has 1000s of aws services running at a time we cant track if some developer created a services running with out enabling the monitoring 
+
+-so it a hectic job to keep track so aws provides a setup to do all this its called AWS CONFIG
+in AWS search for : Config
+ we get :Track Resource Inventory and Changes
+
+open it and we can see how many services are complaint and how many were non complaint 
+(complined means under company rules )
+
+-in aws rules -> there are default rules but as a devops engg we need to create a set of custom rules for our own purpose
+in this we integrate a rule with lamda function .then this aws config will email u when ever any action performed in instace crateing updating or deleting any function awe are configuring
+
+-basically aws config wil call the lamda fun when ever an action takes place in the ec2.we need to provide code in the lamda like if any ec2 created without enamling monitoring fun .Then fetch the details of the ec2 instance and read all configuration and mail it to me
+
+-we know lammda is even driven its serverless but some one has to run it to get the results
+
+-once we call the fun if its not working properply first and foremost troubleshooting step is we should go to cloud watch ->go to the log group ->go to latest log group and check time ->and check the results line by line where it stops .then we can solve that step.here we had runtime problem it above 3 sec genreally lamda its 3 sec so we edit in settings to 10sec and save
+
+-once saved go to actions on the right top of lamda dahbord ACtions and hit RE-EVALUVATE
+
